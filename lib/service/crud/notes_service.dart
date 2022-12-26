@@ -1,15 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:mynotes/extensions/list/filter.dart';
 import 'package:mynotes/service/crud/crud_exceptions.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' show join;
 
-
-
 class NotesService {
   Database? _db;
+
+  DatabaseUser? _user;
 
   List<DatabaseNote> _notes = [];
 
@@ -26,14 +27,30 @@ class NotesService {
 
   late final StreamController<List<DatabaseNote>> _notesStreamController;
 
-  Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream;
+  Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream.filter((note) {
+    final currentUser = _user;
+    if (currentUser != null) {
+      return note.userId == currentUser.id;
+    } else {
+      throw UserShouldBeSetBeforeReadingAllNotes();
+    }
+  });
 
-  Future<DatabaseUser> getOrCreateUser({required String email}) async {
+  Future<DatabaseUser> getOrCreateUser({
+    required String email,
+    bool setAsCurrentUser = true,
+  }) async {
     try {
       final user = await getUser(email: email);
+      if (setAsCurrentUser) {
+        _user = user;
+      }
       return user;
     } on CouldNotFindUser {
       final createdUser = await createUser(email: email);
+      if (setAsCurrentUser) {
+        _user = createdUser;
+      }
       return createdUser;
     } catch (e) {
       rethrow;
@@ -46,18 +63,24 @@ class NotesService {
     _notesStreamController.add(_notes);
   }
 
-  Future<DatabaseNote> updateNote({required DatabaseNote note, required String text}) async { 
+  Future<DatabaseNote> updateNote(
+      {required DatabaseNote note, required String text}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
 
-    //make sure note exists 
+    //make sure note exists
     await getNote(id: note.id);
 
     //update DB
-    final updateCount = await db.update(noteTable, {
-      textColumn: text,
-      isSyncedWithCloudColumn: 0,
-    });
+    final updateCount = await db.update(
+      noteTable,
+      {
+        textColumn: text,
+        isSyncedWithCloudColumn: 0,
+      },
+      where: 'id = ?',
+      whereArgs: [note.id],
+    );
 
     if (updateCount == 0) {
       throw CouldNotUpdateNote();
@@ -96,7 +119,7 @@ class NotesService {
       final note = DatabaseNote.fromRow(notes.first);
       _notes.removeWhere((note) => note.id == id);
       _notes.add(note);
-      _notesStreamController.add(_notes); 
+      _notesStreamController.add(_notes);
       return note;
     }
   }
@@ -149,7 +172,7 @@ class NotesService {
 
     _notes.add(note);
     _notesStreamController.add(_notes);
-    
+
     return note;
   }
 
