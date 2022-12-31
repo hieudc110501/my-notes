@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart' show BuildContext, ModalRoute;
 
 extension GetArgument on BuildContext {
@@ -11,5 +10,5 @@ extension GetArgument on BuildContext {
       }
     }
     return null;
-  } 
+  }
 }

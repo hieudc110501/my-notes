@@ -1,4 +1,3 @@
-
 import 'package:mynotes/service/auth/auth_user.dart';
 
 abstract class AuthProvider {

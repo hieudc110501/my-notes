@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:mynotes/service/cloud/cloud_storage_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,7 +15,7 @@ class CloudNote {
   });
 
   CloudNote.fromSnapshot(QueryDocumentSnapshot<Map<String, dynamic>> snapshot)
-    : documentId = snapshot.id,
-      ownerUserId = snapshot.data()[ownerUserIdFieldName],
-      text = snapshot.data()[textFieldName] as String;
+      : documentId = snapshot.id,
+        ownerUserId = snapshot.data()[ownerUserIdFieldName],
+        text = snapshot.data()[textFieldName] as String;
 }

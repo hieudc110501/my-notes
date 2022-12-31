@@ -66,7 +66,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '361347761242',
     projectId: 'mynotes-flutter-project11',
     storageBucket: 'mynotes-flutter-project11.appspot.com',
-    iosClientId: '361347761242-r1ur7h059hoq8igshj7pi6r28sdt7r64.apps.googleusercontent.com',
+    iosClientId:
+        '361347761242-r1ur7h059hoq8igshj7pi6r28sdt7r64.apps.googleusercontent.com',
     iosBundleId: 'com.example.mynotes',
   );
 
@@ -76,7 +77,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '361347761242',
     projectId: 'mynotes-flutter-project11',
     storageBucket: 'mynotes-flutter-project11.appspot.com',
-    iosClientId: '361347761242-r1ur7h059hoq8igshj7pi6r28sdt7r64.apps.googleusercontent.com',
+    iosClientId:
+        '361347761242-r1ur7h059hoq8igshj7pi6r28sdt7r64.apps.googleusercontent.com',
     iosBundleId: 'com.example.mynotes',
   );
 }
